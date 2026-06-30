@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatGPT Clone</title>
+    <link rel="stylesheet" href="/homePage.css">
+</head>
+<body>
+
+    <div class="container">
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+
+            <div class="sidebar-header" id="chat-list">
+                <button class="new-chat-btn" id="new-chat-btn">
+                    + New Chat
+                </button>
+                <div class="historyBox">
+
+                </div>
+            </div>
+
+           
+
+            <div class="chat-list">
+                <!-- <div class="chat-item">HTML Basics</div>
+                <div class="chat-item">CSS Flexbox</div>
+                <div class="chat-item">JavaScript DOM</div>
+                <div class="chat-item">React Interview</div> -->
+            </div>
+
+        </div>
+
+        <!-- Main -->
+        <div class="main">
+
+            <div class="chat-container">
+
+                <div class="welcome-screen" id="welcome-screen">
+                    <h1>ChatGPT Clone</h1>
+                    <p>How can I help you today?</p>
+                </div>
+
+                <div class="messages" id="messages">
+
+                </div>
+
+                <div  class="input-area">
+
+                    <input
+                        id="message-input"
+                        type="text"
+                        placeholder="Message ChatGPT..."
+                    >
+
+                    <button id="send-btn">
+                        ➤
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <script src="/homePage.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>login · black classic</title>
+  <!-- Font Awesome (clean icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- background animation (normal orbs + grain) -->
+  <div class="bg-animation">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grain"></div>
+  
+  <!-- login card -->
+  <div class="login-card">
+    <h1>⟡ login</h1>
+
+    <!-- form -->
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <!-- combined input: username, phone number, email -->
+      <div class="input-group">
+        <label for="combinedInput"><i class="fas fa-user-circle" style="margin-right: 6px; opacity:0.6;"></i> username · phone · email</label>
+        <input 
+          type="text" 
+          id="combinedInput" 
+          placeholder="username, phone number, or email" 
+          autocomplete="off"
+        />
+      </div>
+
+      <!-- separate password input -->
+      <div class="input-group password-group">
+        <label for="passwordInput"><i class="fas fa-lock" style="margin-right: 6px; opacity:0.6;"></i> password</label>
+        <input 
+          type="password" 
+          id="passwordInput" 
+          placeholder="••••••••" 
+          autocomplete="current-password"
+        />
+      </div>
+
+      <!-- login button -->
+      <button type="submit" class="login-btn" id="loginBtn">
+        <i class="fas fa-arrow-right-to-bracket"></i> log in
+      </button>
+      
+      <!-- feedback message (js) -->
+      <div id="feedback" class="feedback"></div>
+    </form>
+
+    <!-- continue with Google -->
+    <div class="divider">
+      <span class="divider-line"></span>
+      <span class="divider-text">or</span>
+      <span class="divider-line"></span>
+    </div>
+
+    <button class="google-btn" onclick="handleGoogle()">
+      <i class="fab fa-google"></i> continue with Google
+    </button>
+
+    <!-- sign in link below login button -->
+    <div class="signin-wrapper">
+      <span>don't have an account?</span>
+      <a href="#" class="signin-link" onclick="handleSignIn(event)">sign in</a>
+    </div>
+  </div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
