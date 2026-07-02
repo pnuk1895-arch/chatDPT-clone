@@ -1,10 +1,13 @@
 const input = document.getElementById("message-input");
 const sendBtn = document.getElementById("send-btn");
-const inputArea = document.querySelector(".input-area")
-const welcomeScreen = document.querySelector(".welcome-screen")
-const historyBox = document.querySelector(".historyBox")
-const newChatBtn = document.querySelector("#new-chat-btn")
-const chatMessages =document.querySelector("#messages")
+const inputArea = document.querySelector(".input-area");
+const welcomeScreen = document.querySelector(".welcome-screen");
+const historyBox = document.querySelector(".historyBox");
+const newChatBtn = document.querySelector("#new-chat-btn");
+const chatMessages =document.querySelector("#messages");
+const openSlideBar =document.querySelector(".openSlidebar");
+const closeSlidebar =document.querySelector(".closeSlidebar")
+const slidebar=document.querySelector(".sidebar");
 
 let currentConversationId = null;
 //  console.log(currentConversationId)
@@ -15,6 +18,10 @@ let currentConversationId = null;
 window.addEventListener("DOMContentLoaded",(e)=>{
             loadConversations(e)
         })
+
+openSlideBar.addEventListener("click", openSlidebar)
+
+closeSlidebar.addEventListener("click",CloseSlidebar)
 
 sendBtn.addEventListener("click", sendMessage);
 
@@ -36,7 +43,7 @@ input.addEventListener("keydown", (e) => {
 
 async function sendMessage() {
 
-    inputArea.style.position = "static"
+    inputArea.style.bottom = "20px"
 
     welcomeScreen.style.display = "none"
 
@@ -86,8 +93,10 @@ async function sendMessage() {
 
            createChatElement(data.conversationId, text)
 
+           activeChat(data.conversationId)
+
         }
-            removeTypingIndicator();
+            // removeTypingIndicator();
 
             // show AI response
             showMessage(data.result, "AI");
@@ -220,7 +229,7 @@ async function allChatOfOneWindow(id) {
 
     welcomeScreen.style.display="none"
 
-    inputArea.style.position="static"
+    inputArea.style.bottom="20px"
 
     messages.innerHTML=""
 
@@ -258,7 +267,9 @@ function addNewChat() {
 
     welcomeScreen.style.display = ""
 
-    inputArea.style.position = "absolute"
+    inputArea.style.removeProperty("bottom")
+
+    input.value=""
 
     chatMessages.innerHTML=""
 
@@ -304,4 +315,49 @@ async function loadConversations(e)
    
 }
 
+function openSlidebar(){
 
+     slidebar.style.removeProperty("display")
+        
+        setTimeout(() => {
+
+            openSlideBar.style.display="none"
+
+            slidebar.style.transform="translateX(0)"}, 100);
+        
+    const width= window.innerWidth
+            if(width <= 768){
+
+                slidebar.style.display="block"
+                
+                setTimeout(() => {
+
+                    openSlideBar.style.display="none"
+
+                    slidebar.style.transform="translateX(0)"}, 100 );
+                
+            }
+    
+}
+function CloseSlidebar(){
+
+    slidebar.style.transform="translateX(-100%)"
+    
+    setTimeout(()=>{
+        slidebar.style.display="none"
+        openSlideBar.style.display="flex"
+    },850)
+
+    const width= window.innerWidth
+
+    if(width <= 768){
+        
+        slidebar.style.transform="translateX(-100%)"
+    
+        setTimeout(()=>{
+            slidebar.style.display="none"
+            openSlideBar.style.display="flex"
+        },850)
+        
+    }
+}

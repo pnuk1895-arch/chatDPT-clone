@@ -29,8 +29,7 @@ async function mongoDB()
 
     } catch (error) {
         console.log("error while connect to mongoDB", error )
-    }
-    
+    }   
 }
 mongoDB()
 
