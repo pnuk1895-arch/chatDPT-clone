@@ -1,27 +1,30 @@
-const input = document.getElementById("message-input");
-const sendBtn = document.getElementById("send-btn");
+'use strict';
+
+
+const input = document.getElementById("message-input");//const inputEl = document.getElementById('message-input');
+const sendBtn = document.getElementById("send-btn");//const sendBtn = document.getElementById('send-btn');
 const inputArea = document.querySelector(".input-area");
-const welcomeScreen = document.querySelector(".welcome-screen");
+const welcomeScreen = document.querySelector(".welcome-screen");// const welcomeEl = document.getElementById('welcomeScreen');
 const historyBox = document.querySelector(".historyBox");
 const newChatBtn = document.querySelector("#new-chat-btn");
-const chatMessages =document.querySelector("#messages");
-const openSlideBar =document.querySelector(".openSlidebar");
-const closeSlidebar =document.querySelector(".closeSlidebar")
-const slidebar=document.querySelector(".sidebar");
+const chatMessages = document.querySelector("#messages");// const messagesEl = document.getElementById('messages');
+const sidebar = document.getElementById('sidebar');
+const backdrop = document.getElementById('sidebarBackdrop');
+const openBtn = document.getElementById('openSidebar');
+const closeBtn = document.getElementById('closeSidebar');
+const chatTitle = document.getElementById('chatTitle');
+
+
 
 let currentConversationId = null;
-//  console.log(currentConversationId)
-// =======================
-// Event Listeners
-// =======================
 
-window.addEventListener("DOMContentLoaded",(e)=>{
-            loadConversations(e)
-        })
+openBtn.addEventListener('click', toggleSidebar);
+closeBtn.addEventListener('click', closeSidebar);
+backdrop.addEventListener('click', closeSidebar);
 
-openSlideBar.addEventListener("click", openSlidebar)
-
-closeSlidebar.addEventListener("click",CloseSlidebar)
+window.addEventListener("DOMContentLoaded", (e) => {
+    loadConversations(e)
+})
 
 sendBtn.addEventListener("click", sendMessage);
 
@@ -61,7 +64,7 @@ async function sendMessage() {
     input.focus();
 
     // show typing indicator
-    showTypingIndicator();
+    showTyping();
 
     try {
 
@@ -79,8 +82,7 @@ async function sendMessage() {
             })
         });
 
-        if(!response.ok)
-        {
+        if (!response.ok) {
             throw new Error(data.result || "something went wrong")
         }
 
@@ -88,48 +90,47 @@ async function sendMessage() {
 
         currentConversationId = data.conversationId;
 
-        
+
         if (isNewConversation) {
 
-           createChatElement(data.conversationId, text)
+            createChatElement(data.conversationId, text)
 
-        //    activeChat(data.conversationId)
+            //    activeChat(data.conversationId)
 
         }
-            removeTypingIndicator();
+        hideTyping();
 
-            // show AI response
-            showMessage(data.result, "AI");
+        // show AI response
+        showMessage(data.result, "AI");
     }
     catch (error) {
 
         console.log(error);
-        if(error.result)
-        {
+        if (error.result) {
             alert("wait or restart the page")
         }
-        
-        removeTypingIndicator();
+
+        hideTyping();
 
     }
 
 }
 
-function createChatElement(ID,TEXT){
+function createChatElement(ID, TEXT) {
 
-     const historyChatBox = document.createElement("div")
+    const historyChatBox = document.createElement("div")
 
-            historyChatBox.dataset.id = ID
+    historyChatBox.dataset.id = ID
 
-            historyChatBox.classList.add("chatHistoryBox")
+    historyChatBox.classList.add("chatHistoryBox")
 
-            historyChatBox.innerText = TEXT.substring(0, 30)
+    historyChatBox.innerText = TEXT.substring(0, 30)
 
-            historyBox.prepend(historyChatBox)
+    historyBox.prepend(historyChatBox)
 
-            historyChatBox.addEventListener("click", (e) => {
-                allChatOfOneWindow(e.currentTarget.dataset.id)
-            })
+    historyChatBox.addEventListener("click", (e) => {
+        allChatOfOneWindow(e.currentTarget.dataset.id)
+    })
 }
 
 // =======================
@@ -167,57 +168,29 @@ function showMessage(text, role) {
 
 }
 
-// =======================
-// Typing Indicator
-// =======================
+// ----- show typing indicator -----
+let typingEl = null;
 
-function showTypingIndicator() {
-
-    const typing = document.createElement("div");
-
-    typing.classList.add(
-        "message",
-        "ai"
-    );
-
-    typing.id = "typing-indicator";
-
-    typing.innerHTML = `
-    <div class="avatar">
-        🤖
-    </div>
-
-    <div class="message-content">
-        Typing...
-    </div>
-`;
-
-    chatMessages.appendChild(typing);
-
+function showTyping() {
+    if (typingEl) return;
+    typingEl = document.createElement('div');
+    typingEl.className = 'typing-indicator';
+    typingEl.innerHTML = '<span></span><span></span><span></span>';
+    chatMessages.appendChild(typingEl);
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
-
 }
-
-function removeTypingIndicator() {
-
-
-    const typing =
-        document.getElementById(
-            "typing-indicator"
-        );
-
-    if(typing) {
-        typing.remove();
+function hideTyping() {
+    if (typingEl) {
+        typingEl.remove();
+        typingEl = null;
     }
-
 }
 
 let currentChatId = null;
 
 async function allChatOfOneWindow(id) {
 
-    console.log(id,"id")
+    console.log(id, "id")
 
     // If same chat is clicked again, do nothing
     if (currentChatId === id) {
@@ -227,39 +200,38 @@ async function allChatOfOneWindow(id) {
     // Save the new chat id
     currentChatId = id;
 
-    welcomeScreen.style.display="none"
+    welcomeScreen.style.display = "none"
 
-    inputArea.style.bottom="20px"
+    inputArea.style.bottom = "0px"
 
-    messages.innerHTML=""
+    messages.innerHTML = ""
 
-    try{
+    try {
 
-    const chatDocumentresponse = await fetch("/chatDocument",
-        {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                id: id
-            })
+        const chatDocumentresponse = await fetch("/chatDocument",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    id: id
+                })
+            }
+        )
+
+        const chatDocumentData = await chatDocumentresponse.json()
+
+        if (!chatDocumentresponse.ok) {
+            throw new Error(data.messages || "something went wrong")
         }
-    )
 
-    const chatDocumentData = await chatDocumentresponse.json()
-  
-    if(!chatDocumentresponse.ok)
-    {
-        throw new Error( data.messages || "something went wrong" )
-    }
-
-    chatDocumentData.messages.forEach(msg => {
-       showMessage(msg.text, msg.role)
-    });
-    }catch(error){
-        if(error.messages)
-        alert("page was not loaded")
+        chatDocumentData.messages.forEach(msg => {
+            showMessage(msg.text, msg.role)
+        });
+    } catch (error) {
+        if (error.messages)
+            alert("page was not loaded")
     }
 }
 
@@ -269,95 +241,81 @@ function addNewChat() {
 
     inputArea.style.removeProperty("bottom")
 
-    input.value=""
+    input.value = ""
 
-    chatMessages.innerHTML=""
+    chatMessages.innerHTML = ""
 
-    currentChatId=null
+    currentChatId = null
 
-    currentConversationId=null
+    currentConversationId = null
 
 }
 
-async function loadConversations(e)
-{
-    try{
-        const allObjs= await fetch("/getAllConversation",{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                }
-            })
-
-            if(!allObjs.ok)
-            {
-                throw new Error(data.message || "something went wrong")
+async function loadConversations(e) {
+    try {
+        const allObjs = await fetch("/getAllConversation", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
             }
+        })
 
-        const dataAllObjs= await allObjs.json()
+        if (!allObjs.ok) {
+            throw new Error(data.message || "something went wrong")
+        }
 
-        let dataArr=dataAllObjs.allObj
+        const dataAllObjs = await allObjs.json()
 
-        dataArr.forEach( Objs=>{
-            let id=Objs._id
-            let title=Objs.title
+        let dataArr = dataAllObjs.allObj
 
-            createChatElement(id,title)
-                                    
-        })  
-        
-    }catch(error){
-        if(error.message)
-        {
+        dataArr.forEach(Objs => {
+            let id = Objs._id
+            let title = Objs.title
+
+            createChatElement(id, title)
+
+        })
+
+    } catch (error) {
+        if (error.message) {
             alert("wait and open webpage again")
         }
     }
-   
+
 }
 
-function openSlidebar(){
+let isSidebarOpen = false;
 
-     slidebar.style.removeProperty("display")
-        
-        setTimeout(() => {
-
-            openSlideBar.style.display="none"
-
-            slidebar.style.transform="translateX(0)"}, 100);
-        
-    const width= window.innerWidth
-            if(width <= 768){
-
-                slidebar.style.display="block"
-                
-                setTimeout(() => {
-
-                    openSlideBar.style.display="none"
-
-                    slidebar.style.transform="translateX(0)"}, 100 );
-                
-            }
-    
+function openSidebar() {
+    sidebar.classList.add('open');
+    backdrop.classList.add('open');
+    isSidebarOpen = true;
+    document.body.style.overflow = 'hidden';
 }
-function CloseSlidebar(){
 
-    slidebar.style.transform="translateX(-100%)"
-    
-    setTimeout(()=>{
-        slidebar.style.display="none"
-        openSlideBar.style.display="flex"
-    },850)
+function closeSidebar() {
+    sidebar.classList.remove('open');
+    backdrop.classList.remove('open');
+    isSidebarOpen = false;
+    document.body.style.overflow = '';
+}
 
-    const width= window.innerWidth
+function toggleSidebar() {
+    if (isSidebarOpen) {
+        closeSidebar();
+    } else {
+        openSidebar();
+    }
+}
 
-    if(width <= 768){
-        
-        slidebar.style.transform="translateX(-100%)"
-    
-        setTimeout(()=>{
-            slidebar.style.display="none"
-            openSlideBar.style.display="flex"
-        },850)
-        
+// ----- detect mobile -----
+function checkMobile() {
+    isMobile = window.innerWidth <= 768;
+    // if desktop, ensure sidebar is visible and backdrop hidden
+    if (!isMobile) {
+        sidebar.classList.remove('open');
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+        isSidebarOpen = false;
     }
 }
