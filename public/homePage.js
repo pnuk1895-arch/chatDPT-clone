@@ -93,10 +93,10 @@ async function sendMessage() {
 
            createChatElement(data.conversationId, text)
 
-           activeChat(data.conversationId)
+        //    activeChat(data.conversationId)
 
         }
-            // removeTypingIndicator();
+            removeTypingIndicator();
 
             // show AI response
             showMessage(data.result, "AI");
