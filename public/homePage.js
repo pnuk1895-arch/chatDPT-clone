@@ -1,13 +1,13 @@
 'use strict';
 
 
-const input = document.getElementById("message-input");//const inputEl = document.getElementById('message-input');
-const sendBtn = document.getElementById("send-btn");//const sendBtn = document.getElementById('send-btn');
+const input = document.getElementById("message-input");
+const sendBtn = document.getElementById("send-btn");
 const inputArea = document.querySelector(".input-area");
-const welcomeScreen = document.querySelector(".welcome-screen");// const welcomeEl = document.getElementById('welcomeScreen');
+const welcomeScreen = document.querySelector("#welcomeScreen");
 const historyBox = document.querySelector(".historyBox");
 const newChatBtn = document.querySelector("#new-chat-btn");
-const chatMessages = document.querySelector("#messages");// const messagesEl = document.getElementById('messages');
+const chatMessages = document.querySelector("#messages");
 const sidebar = document.getElementById('sidebar');
 const backdrop = document.getElementById('sidebarBackdrop');
 const openBtn = document.getElementById('openSidebar');
@@ -21,32 +21,23 @@ let currentConversationId = null;
 openBtn.addEventListener('click', toggleSidebar);
 closeBtn.addEventListener('click', closeSidebar);
 backdrop.addEventListener('click', closeSidebar);
-
 window.addEventListener("DOMContentLoaded", (e) => {
-    loadConversations(e)
-})
-
+                            loadConversations(e)
+                        })
 sendBtn.addEventListener("click", sendMessage);
-
 newChatBtn.addEventListener("click", addNewChat)
-
 input.addEventListener("keydown", (e) => {
 
-
-    if (e.key === "Enter") {
-        sendMessage();
-    }
-
-
-});
+                    if (e.key === "Enter") {
+                        sendMessage();
+                    }
+                });
 
 // =======================
 // Send Message
 // =======================
 
 async function sendMessage() {
-
-    inputArea.style.bottom = "20px"
 
     welcomeScreen.style.display = "none"
 
@@ -202,9 +193,8 @@ async function allChatOfOneWindow(id) {
 
     welcomeScreen.style.display = "none"
 
-    inputArea.style.bottom = "0px"
 
-    messages.innerHTML = ""
+    chatMessages.innerHTML = ""
 
     try {
 
@@ -237,17 +227,15 @@ async function allChatOfOneWindow(id) {
 
 function addNewChat() {
 
-    welcomeScreen.style.display = ""
+    input.value = "";
 
-    inputArea.style.removeProperty("bottom")
+    chatMessages.innerHTML = "";
 
-    input.value = ""
+    currentChatId = null;
+    currentConversationId = null;
 
-    chatMessages.innerHTML = ""
-
-    currentChatId = null
-
-    currentConversationId = null
+    // Show welcome screen again
+    welcomeScreen.style.display = "flex";
 
 }
 

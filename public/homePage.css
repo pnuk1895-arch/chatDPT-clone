@@ -6,7 +6,7 @@
 }
 
 body {
-    min-height: 100vh;
+    min-height: 100dvh;
     background-color: #212121;
     color: #e0e0e0;
     font-family: system-ui, -apple-system, sans-serif;
@@ -16,7 +16,7 @@ body {
 /* ----- CONTAINER (flex row) ----- */
 .container {
     display: flex;
-    height: 100vh;
+    height: 100dvh;
     width: 100%;
     overflow: hidden;
     position: relative;
@@ -32,7 +32,7 @@ body {
     padding: 16px 14px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     overflow-y: auto;
     overflow-x: hidden;
     z-index: 40;
@@ -241,7 +241,7 @@ body {
     background-color: #212121;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     min-width: 0;
     position: relative;
     transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
@@ -250,7 +250,7 @@ body {
 .chat-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100dvh;
     flex: 1;
     position: relative;
     min-width: 0;
@@ -341,7 +341,7 @@ body {
     justify-content: center;
     text-align: center;
     flex: 1;
-    min-height: 60vh;
+    min-height: 60dvh;
     padding: 20px;
     pointer-events: none;
 }
@@ -643,7 +643,7 @@ body {
         border-right: 1px solid #2a2a2a;
         padding: 16px 14px;
         border-radius: 0;
-        height: 100vh;
+        height: 100dvh;
         z-index: 40;
     }
 
@@ -868,7 +868,7 @@ body {
     }
 
     .welcome-screen {
-        min-height: 40vh;
+        min-height: 40dvh;
     }
 
     .welcome-screen h1 {
