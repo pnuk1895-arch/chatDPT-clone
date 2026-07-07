@@ -307,3 +307,16 @@ function checkMobile() {
         isSidebarOpen = false;
     }
 }
+
+window.visualViewport?.addEventListener("resize", updatePosition);
+window.visualViewport?.addEventListener("scroll", updatePosition);
+
+const inputBar = document.querySelector(".chat-input");
+function updatePosition() {
+  if (window.visualViewport) {
+    const keyboardHeight =
+      window.innerHeight - window.visualViewport.height;
+        
+    inputBar.style.bottom = `${keyboardHeight}px`;
+  }
+}
