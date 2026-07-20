@@ -1,5 +1,3 @@
-'use strict';
-
 
 const input = document.getElementById("message-input");
 const sendBtn = document.getElementById("send-btn");
@@ -22,16 +20,16 @@ openBtn.addEventListener('click', toggleSidebar);
 closeBtn.addEventListener('click', closeSidebar);
 backdrop.addEventListener('click', closeSidebar);
 window.addEventListener("DOMContentLoaded", (e) => {
-                            loadConversations(e)
-                        })
+    loadConversations(e)
+   })
 sendBtn.addEventListener("click", sendMessage);
 newChatBtn.addEventListener("click", addNewChat)
 input.addEventListener("keydown", (e) => {
 
-                    if (e.key === "Enter") {
-                        sendMessage();
-                    }
-                });
+    if (e.key === "Enter") {
+        sendMessage();
+    }
+});
 
 // =======================
 // Send Message
@@ -79,14 +77,15 @@ async function sendMessage() {
 
         const data = await response.json();
 
-        currentConversationId = data.conversationId;
+
 
 
         if (isNewConversation) {
+            currentConversationId = data.conversationId;
 
             createChatElement(data.conversationId, text)
 
-            //    activeChat(data.conversationId)
+            activeChat(data.conversationId)
 
         }
         hideTyping();
@@ -102,26 +101,78 @@ async function sendMessage() {
         }
 
         hideTyping();
-
     }
-
 }
 
 function createChatElement(ID, TEXT) {
 
     const historyChatBox = document.createElement("div")
-
     historyChatBox.dataset.id = ID
-
     historyChatBox.classList.add("chatHistoryBox")
-
     historyChatBox.innerText = TEXT.substring(0, 30)
 
-    historyBox.prepend(historyChatBox)
+    const threeDotHistory = document.createElement("span")
+    threeDotHistory.classList.add("threeDotHistory")
+    threeDotHistory.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="19" height="19"
+                                fill="currentColor" class="bi bi-three-dots" viewBox="0 0 16 16">
+                                <path
+                                    d="M3 9.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3m5 0a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+                            </svg>`
+
+    historyBox.append(historyChatBox)
+    historyChatBox.append(threeDotHistory)
 
     historyChatBox.addEventListener("click", (e) => {
-        allChatOfOneWindow(e.currentTarget.dataset.id)
+        e.stopPropagation();
+        let chatID = e.currentTarget.dataset.id
+        allChatOfOneWindow(chatID)
+        activeChat(chatID)
     })
+
+    //delete button
+    const Delete = document.createElement("span")
+    Delete.dataset.id = ID
+    Delete.classList.add("delete")
+    Delete.innerText = "Delete"
+
+    let show = false
+
+    threeDotHistory.addEventListener("click", (e) => {
+        e.stopPropagation();
+
+        if (show) {
+            Delete.remove()
+            show = false
+            console.log(false)
+        }
+        else {
+
+            historyChatBox.append(Delete)
+            show = true
+            console.log(true)
+        }
+    })
+
+
+    Delete.addEventListener("click", (e) => {
+        e.stopPropagation();
+        let id = e.target.dataset.id // id of the element that i want to delete
+        deleteChat(id)//function to deletedocument form database
+
+        Array.from(historyBox.children).forEach((child) => {
+            if (child.dataset.id === id) {
+                child.remove()
+                if (child.classList.contains("active")) {
+                    chatMessages.innerText = ""
+                    return;
+                }
+                return;
+            }
+        })
+    })
+
+
+
 }
 
 // =======================
@@ -170,6 +221,7 @@ function showTyping() {
     chatMessages.appendChild(typingEl);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
 function hideTyping() {
     if (typingEl) {
         typingEl.remove();
@@ -239,37 +291,46 @@ function addNewChat() {
 
 }
 
-async function loadConversations(e) {
+let activeID = ""
+
+function activeChat(ID) {
+
+    if (activeID == ID) return;
+
+    document.querySelector(".active")?.classList.remove("active")
+
+    document.querySelector(`[data-id="${ID}"]`).classList.add("active")
+
+    activeID = ID
+
+    localStorage.setItem("activeChatId", ID);
+}
+
+async function loadConversations() {
     try {
-        const allObjs = await fetch("/getAllConversation", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        })
+        const allObjs = await fetch("/getAllConversation");
+
+        const dataAllObjs = await allObjs.json();
 
         if (!allObjs.ok) {
-            throw new Error(data.message || "something went wrong")
+            throw new Error(dataAllObjs.message || "Something went wrong");
         }
 
-        const dataAllObjs = await allObjs.json()
+        dataAllObjs.allObj.forEach(obj => {
+            createChatElement(obj._id, obj.title);
+        });
 
-        let dataArr = dataAllObjs.allObj
+        // AFTER creating the elements
+        const savedId = localStorage.getItem("activeChatId");
 
-        dataArr.forEach(Objs => {
-            let id = Objs._id
-            let title = Objs.title
-
-            createChatElement(id, title)
-
-        })
+        if (savedId) {
+            activeChat(savedId);
+            await allChatOfOneWindow(savedId);
+        }
 
     } catch (error) {
-        if (error.message) {
-            alert("wait and open webpage again")
-        }
+        console.error(error);
     }
-
 }
 
 let isSidebarOpen = false;
@@ -311,12 +372,32 @@ function checkMobile() {
 window.visualViewport?.addEventListener("resize", updatePosition);
 window.visualViewport?.addEventListener("scroll", updatePosition);
 
-const inputBar = document.querySelector(".chat-input");
+
 function updatePosition() {
-  if (window.visualViewport) {
-    const keyboardHeight =
-      window.innerHeight - window.visualViewport.height;
-        
-    inputBar.style.bottom = `${keyboardHeight}px`;
-  }
+    if (window.visualViewport) {
+        const keyboardHeight =
+            window.innerHeight - window.visualViewport.height;
+
+        inputArea.style.bottom = `${keyboardHeight}px`;
+    }
 }
+
+async function deleteChat(ID) {
+
+
+    let response = await fetch("http://localhost:4000/DeleteDocument", {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(
+            {
+                ID: ID
+            }
+        )
+    })
+
+    const data = await response.json()
+
+}
+

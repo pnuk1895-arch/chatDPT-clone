@@ -1,14 +1,21 @@
-const express=require("express")
-const { homePage, callToLLM, callToMongoDB, getAllConversationObj}=require("../controller/userController")
+const express = require("express")
+const { homePage,
+        callToLLM,
+        callToMongoDB,
+        getAllConversationObj,
+        deleteDocumentObj
+    } = require("../controller/userController")
 
-const userRoutes=express.Router()
+const userRoutes = express.Router()
 
-userRoutes.get("/",homePage)
+userRoutes.get("/", homePage)
 
-userRoutes.post("/chat",callToLLM)
+userRoutes.post("/chat", callToLLM)
 
-userRoutes.post("/chatDocument",callToMongoDB)
+userRoutes.post("/chatDocument", callToMongoDB)
 
-userRoutes.post("/getAllConversation", getAllConversationObj)
+userRoutes.get("/getAllConversation", getAllConversationObj)
 
-module.exports=userRoutes
+userRoutes.delete("/DeleteDocument", deleteDocumentObj)
+
+module.exports = userRoutes

@@ -159,10 +159,31 @@ async function getAllConversationObj(req, res) {
     }
 }
 
+async function deleteDocumentObj(req, res)
+{
+    const { ID }=req.body
+
+    console.log(ID)
+    try{
+        const item =await conversationModel.findByIdAndDelete(ID)
+
+        // console.log(item)
+        res.status(200).json(
+            {
+                success:true,
+                message:"deleted"
+            }
+        )
+    }
+    catch(error){
+        console.log(error)
+    }
+}
 module.exports = {
     homePage,
     callToLLM,
     callToMongoDB,
-    getAllConversationObj
+    getAllConversationObj,
+    deleteDocumentObj
 }
 
